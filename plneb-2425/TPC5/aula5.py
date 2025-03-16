@@ -41,9 +41,17 @@ def adicionar_conceito():
 @app.route("/conceitos/<designacao>")
 def conceito_unico(designacao):
     if designacao in db:
-        return render_template("conceitos.html", designacoes=[designacao], descricao=db[designacao], title=f"Conceito: {designacao}")
+        return render_template(
+            "conceitos.html",
+            designacoes=[], 
+            single_concept=designacao, 
+            descricao=db[designacao], 
+            title=f"Conceito: {designacao}"
+        )
     else:
         return render_template("404.html", title="Erro 404 - Não encontrado"), 404
+
     
     
 app.run(host="localhost", port=4002, debug=True)
+

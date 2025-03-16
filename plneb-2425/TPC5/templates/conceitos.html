@@ -1,7 +1,22 @@
-<ul>
-    {% for designacao in designacoes %}
-        <li>
-            <strong>{{ designacao }}</strong> {{ descricao }}
-        </li>
-    {% endfor %}
-</ul>
+{% extends 'layout.html' %}
+
+{% block head %}
+<title>{{ title }}</title>
+{% endblock %}
+
+{% block body %}
+{% if designacoes %}
+    <ul>
+        {% for designacao in designacoes %}
+            <li>
+                <a href="{{ url_for('conceito_unico', designacao=designacao) }}">{{ designacao }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if single_concept %}
+    <h1>{{ single_concept }}</h1>
+    <p>{{ descricao }}</p>
+{% endif %}
+{% endblock %}

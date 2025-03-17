@@ -1,7 +1,7 @@
 # TPC5
 
 O objetivo do trabalho de casa é a criação de um path entre a lista de conceitos e as suas definições.
-Para tal, foi estabelecida uma hiperligação entre cada conceito na lista e a sua definição
+Para tal, foi estabelecida uma hiperligação entre cada conceito na lista e a sua definição.
 
 ```python
 @app.route("/conceitos/<designacao>")

@@ -1,0 +1,38 @@
+{% extends 'layout.html' %}
+
+
+{% block head %}
+<title>{{title}}</title>
+{% endblock%}
+
+
+{% block body %}
+
+
+<form action="/conceitos" method="POST">
+    <div class="mb-3">
+      <label for="disignacao_input" class="form-label">Designação</label>
+      <input type="text" class="form-control" id="disignacao_input" name="designacao">
+    </div>
+    <div class="mb-3">
+        <label for="descricao_input" class="form-label">Descrição</label>
+        <input type="text" class="form-control" id="descricao_input" name="descricao">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+
+
+<div class="list-group">
+
+    {% for designacao in designacoes %}
+
+        <a href="/conceitos/{{designacao}}" class="list-group-item list-group-item-action">{{designacao}}</a>
+
+    {% endfor %}
+
+</div>
+
+
+{% endblock %}
+

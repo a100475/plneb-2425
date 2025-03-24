@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+<title> Conceito </title>
+{% endblock %}
+
+{% block body %}
+
+
+    <div class="card text-center">
+        <div class="card-header">
+            <h3> {{designacao}} </h3>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Descrição</h5>
+          <p class="card-text">{{descricao}}</p>
+        </div>
+      </div>
+
+    <a href="/conceitos" class="btn btn-primary mt-3">Voltar</a>
+
+
+
+
+{% endblock %}

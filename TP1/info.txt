@@ -1,0 +1,47 @@
+CORREÇÕES EM FALTA:
+-> pt [BR] sem itálico está trocado à mão.
+-> "coronarisicopatiënte" está trocado à mão.
+-> "comunicat medicau de nauta" não tem classes gramaticais.
+-> "patient zéro" e outras traduções com pipes têm null (eg: "contactonderzoeker").
+
+TAGS MODIFICADAS:
+Linha 1152:
+    - Original:
+        <text font="12" height="16" left="157" top="982" width="13"><i>pt</i></text>
+    - Novo:
+        <text font="12" height="16" left="157" top="982" width="13"><i>pt [BR]</i></text>
+Linha 1154:
+    - Original:
+        <text font="11" height="16" left="187" top="982" width="147"> [BR] molécula AMY-101 </text>
+    - Novo:
+        <text font="11" height="16" left="187" top="982" width="147"> molécula AMY-101 </text>
+Linha 21657:
+    - Original:
+        <text font="12" height="16" left="158" top="898" width="12"><i>pt </i></text>
+    - Novo:
+        <text font="12" height="16" left="158" top="898" width="12"><i>pt [BR]</i></text>
+
+Linha 21664:
+    - Original:
+        <text font="12" height="16" left="442" top="939" width="19"><i> n; </i></text>
+    - Novo:
+        <text font="12" height="16" left="442" top="939" width="19"><i>n</i></text>
+Linha 21665:
+    - Original:
+        <text font="12" height="16" left="158" top="960" width="113"><i>   risicopatiënt </i></text>
+    - Novo:
+        <text font="12" height="16" left="158" top="960" width="113"><i>; risicopatiënt</i></text>
+Linha 21667:
+    - Original:
+        <text font="12" height="16" left="269" top="960" width="97"><i> risicopatiënte n</i></text>
+    - Novo:
+        <text font="12" height="16" left="269" top="960" width="97"><i> risicopatiënte</i></text>
+Linha 21668:
+    - Original:
+        <text font="11" height="16" left="124" top="981" width="3"> </text>
+    - Novo:
+        <text font="12" height="16" left="269" top="960" width="97">n</text>
+
+
+TAGS REMOVIDAS:
+Linha 21658: <text font="12" height="16" left="187" top="898" width="24"><i> [BR] </i></text>

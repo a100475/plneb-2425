@@ -1,0 +1,26 @@
+.stat-card {
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.alphabet-item {
+    background-color: #f0f7ff;
+    border: 1px solid #d1e7ff;
+    color: #495057;
+    border-radius: 6px;
+    padding: 12px 8px;
+    margin: 3px;
+    text-align: center;
+    font-weight: 500;
+    min-width: 50px;
+}
+
+.compact-badges {
+    max-height: 120px;
+    overflow-y: auto;
+}

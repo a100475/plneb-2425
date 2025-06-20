@@ -1,0 +1,437 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<title>Adicionar Conceito</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/add_edit_concept.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <h2 class="mb-4">Adicionar Novo Conceito</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('add.adicionar') }}" method="POST" class="row g-3" novalidate>
+        
+        <!-- Informação Básica -->
+        <div class="col-12">
+            <div class="form-section">
+                <h5 class="section-title">Informação Básica</h5>
+                
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="termo" class="form-label">Termo *</label>
+                        <input type="text" class="form-control" id="termo" name="termo" required>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="lex_cat" class="form-label">Categoria Lexical</label>
+                        <select class="form-select" id="lex_cat" name="lex_cat">
+                            <option value="">Selecionar...</option>
+                            <option value="n m">Nome masculino</option>
+                            <option value="n f">Nome feminino</option>
+                            <option value="adj">Adjetivo</option>
+                            <option value="v intr">Verbo Intransitivo</option>
+                            <option value="v tr">Verbo Transitivo</option>
+                            <option value="adv">Advérbio</option>
+                            <option value="prep">Preposição</option>
+                            <option value="conj">Conjunção</option>
+                            <option value="interj">Interjeição</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Traduções -->
+        <div class="col-12">
+            <div class="form-section">
+                <h5 class="section-title">Traduções</h5>
+                
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="traducao_ca_term" class="form-label">Catalão - Termo</label>
+                        <input type="text" class="form-control" id="traducao_ca_term" name="traducao_ca_term">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="lex_cat" class="form-label">Categoria Lexical</label>
+                        <select class="form-select" id="lex_cat_ca" name="lex_cat_ca">
+                            <option value="">Selecionar...</option>
+                            <option value="n m">Nome masculino</option>
+                            <option value="n f">Nome feminino</option>
+                            <option value="adj">Adjetivo</option>
+                            <option value="v intr">Verbo Intransitivo</option>
+                            <option value="v tr">Verbo Transitivo</option>
+                            <option value="adv">Advérbio</option>
+                            <option value="prep">Preposição</option>
+                            <option value="conj">Conjunção</option>
+                            <option value="interj">Interjeição</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label for="traducao_es_term" class="form-label">Espanhol - Termo</label>
+                        <input type="text" class="form-control" id="traducao_es_term" name="traducao_es_term">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="lex_cat" class="form-label">Categoria Lexical</label>
+                        <select class="form-select" id="lex_cat_es" name="lex_cat_es">
+                            <option value="">Selecionar...</option>
+                            <option value="n m">Nome masculino</option>
+                            <option value="n f">Nome feminino</option>
+                            <option value="adj">Adjetivo</option>
+                            <option value="v intr">Verbo Intransitivo</option>
+                            <option value="v tr">Verbo Transitivo</option>
+                            <option value="adv">Advérbio</option>
+                            <option value="prep">Preposição</option>
+                            <option value="conj">Conjunção</option>
+                            <option value="interj">Interjeição</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label for="traducao_en_term" class="form-label">Inglês - Termo</label>
+                        <input type="text" class="form-control" id="traducao_en_term" name="traducao_en_term">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="lex_cat" class="form-label">Categoria Lexical</label>
+                        <select class="form-select" id="lex_cat_en" name="lex_cat_en">
+                            <option value="">Selecionar...</option>
+                            <option value="n m">Nome masculino</option>
+                            <option value="n f">Nome feminino</option>
+                            <option value="adj">Adjetivo</option>
+                            <option value="v intr">Verbo Intransitivo</option>
+                            <option value="v tr">Verbo Transitivo</option>
+                            <option value="adv">Advérbio</option>
+                            <option value="prep">Preposição</option>
+                            <option value="conj">Conjunção</option>
+                            <option value="interj">Interjeição</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label for="traducao_fr_term" class="form-label">Francês - Termo</label>
+                        <input type="text" class="form-control" id="traducao_fr_term" name="traducao_fr_term">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="lex_cat" class="form-label">Categoria Lexical</label>
+                        <select class="form-select" id="lex_cat_fr" name="lex_cat_fr">
+                            <option value="">Selecionar...</option>
+                            <option value="n m">Nome masculino</option>
+                            <option value="n f">Nome feminino</option>
+                            <option value="adj">Adjetivo</option>
+                            <option value="v intr">Verbo Intransitivo</option>
+                            <option value="v tr">Verbo Transitivo</option>
+                            <option value="adv">Advérbio</option>
+                            <option value="prep">Preposição</option>
+                            <option value="conj">Conjunção</option>
+                            <option value="interj">Interjeição</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label for="traducao_ar_term" class="form-label">Árabe - Termo</label>
+                        <input type="text" class="form-control" id="traducao_ar_term" name="traducao_ar_term">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="lex_cat" class="form-label">Categoria Lexical</label>
+                        <select class="form-select" id="lex_cat_ar" name="lex_cat_ar">
+                            <option value="">Selecionar...</option>
+                            <option value="n m">Nome masculino</option>
+                            <option value="n f">Nome feminino</option>
+                            <option value="adj">Adjetivo</option>
+                            <option value="v intr">Verbo Intransitivo</option>
+                            <option value="v tr">Verbo Transitivo</option>
+                            <option value="adv">Advérbio</option>
+                            <option value="prep">Preposição</option>
+                            <option value="conj">Conjunção</option>
+                            <option value="interj">Interjeição</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label for="traducao_nl_term" class="form-label">Holandês - Termo</label>
+                        <input type="text" class="form-control" id="traducao_nl_term" name="traducao_nl_term">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="lex_cat" class="form-label">Categoria Lexical</label>
+                        <select class="form-select" id="lex_cat_nl" name="lex_cat_nl">
+                            <option value="">Selecionar...</option>
+                            <option value="n m">Nome masculino</option>
+                            <option value="n f">Nome feminino</option>
+                            <option value="adj">Adjetivo</option>
+                            <option value="v intr">Verbo Intransitivo</option>
+                            <option value="v tr">Verbo Transitivo</option>
+                            <option value="adv">Advérbio</option>
+                            <option value="prep">Preposição</option>
+                            <option value="conj">Conjunção</option>
+                            <option value="interj">Interjeição</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label for="traducao_oc_term" class="form-label">Occitano - Termo</label>
+                        <input type="text" class="form-control" id="traducao_oc_term" name="traducao_oc_term">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="lex_cat" class="form-label">Categoria Lexical</label>
+                        <select class="form-select" id="lex_cat_oc" name="lex_cat_oc">
+                            <option value="">Selecionar...</option>
+                            <option value="n m">Nome masculino</option>
+                            <option value="n f">Nome feminino</option>
+                            <option value="adj">Adjetivo</option>
+                            <option value="v intr">Verbo Intransitivo</option>
+                            <option value="v tr">Verbo Transitivo</option>
+                            <option value="adv">Advérbio</option>
+                            <option value="prep">Preposição</option>
+                            <option value="conj">Conjunção</option>
+                            <option value="interj">Interjeição</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label for="traducao_eu_term" class="form-label">Basco - Termo</label>
+                        <input type="text" class="form-control" id="traducao_eu_term" name="traducao_eu_term">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="lex_cat" class="form-label">Categoria Lexical</label>
+                        <select class="form-select" id="lex_cat_eu" name="lex_cat_eu">
+                            <option value="">Selecionar...</option>
+                            <option value="n m">Nome masculino</option>
+                            <option value="n f">Nome feminino</option>
+                            <option value="adj">Adjetivo</option>
+                            <option value="v intr">Verbo Intransitivo</option>
+                            <option value="v tr">Verbo Transitivo</option>
+                            <option value="adv">Advérbio</option>
+                            <option value="prep">Preposição</option>
+                            <option value="conj">Conjunção</option>
+                            <option value="interj">Interjeição</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label for="traducao_gl_term" class="form-label">Galego - Termo</label>
+                        <input type="text" class="form-control" id="traducao_gl_term" name="traducao_gl_term">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="lex_cat" class="form-label">Categoria Lexical</label>
+                        <select class="form-select" id="lex_cat_gl" name="lex_cat_gl">
+                            <option value="">Selecionar...</option>
+                            <option value="n m">Nome masculino</option>
+                            <option value="n f">Nome feminino</option>
+                            <option value="adj">Adjetivo</option>
+                            <option value="v intr">Verbo Intransitivo</option>
+                            <option value="v tr">Verbo Transitivo</option>
+                            <option value="adv">Advérbio</option>
+                            <option value="prep">Preposição</option>
+                            <option value="conj">Conjunção</option>
+                            <option value="interj">Interjeição</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Descrições -->
+        <div class="col-12">
+            <div class="form-section">
+                <h5 class="section-title">Descrições</h5>
+                
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label for="desc" class="form-label">Descrição (Português)</label>
+                        <textarea class="form-control" id="desc" name="desc" rows="3" placeholder="Uma descrição por linha"></textarea>
+                        <div class="form-text">Separe múltiplas descrições com quebras de linha</div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="desc_ca_type" class="form-label">Tipo (Catalão)</label>
+                        <input type="text" class="form-control" id="desc_ca_type" name="desc_ca_type" placeholder="Ex: PRINCIPIS ACTIUS">
+                    </div>
+                    
+                    <div class="col-12">
+                        <label for="desc_ca_text" class="form-label">Descrição (Catalão)</label>
+                        <textarea class="form-control" id="desc_ca_text" name="desc_ca_text" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sinónimos e Relações -->
+        <div class="col-12">
+            <div class="form-section">
+                <h5 class="section-title">Sinónimos e Relações</h5>
+                
+                <div class="row g-3">
+                    <!-- Sinónimos Português -->
+                    <div class="col-12">
+                        <label class="form-label">Sinónimos (Português)</label>
+                        <div id="sinonimos-container">
+                            <div class="row g-2 mb-2 sinonimo-row">
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" name="sinonimo_pt_term[]" placeholder="Sinónimo">
+                                </div>
+                                <div class="col-md-4">
+                                    <select class="form-select" name="sinonimo_pt_lex[]">
+                                        <option value="">Categoria Lexical</option>
+                                        <option value="n m">Nome masculino</option>
+                                        <option value="n f">Nome feminino</option>
+                                        <option value="adj">Adjetivo</option>
+                                        <option value="v intr">Verbo Intransitivo</option>
+                                        <option value="v tr">Verbo Transitivo</option>
+                                        <option value="adv">Advérbio</option>
+                                        <option value="prep">Preposição</option>
+                                        <option value="conj">Conjunção</option>
+                                        <option value="interj">Interjeição</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-outline-danger remove-sinonimo" style="display: none;">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline-primary btn-sm" id="add-sinonimo-pt">
+                            <i class="bi bi-plus me-1"></i>Adicionar Sinónimo
+                        </button>
+                    </div>
+                    
+                    <!-- Sinónimos Catalão -->
+                    <div class="col-12">
+                        <label class="form-label">Sinónimos (Catalão)</label>
+                        <div id="sinonimos-ca-container">
+                            <div class="row g-2 mb-2 sinonimo-ca-row">
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" name="sinonimo_ca_term[]" placeholder="Sinónimo (Catalão)">
+                                </div>
+                                <div class="col-md-4">
+                                    <select class="form-select" name="sinonimo_ca_lex[]">
+                                        <option value="">Categoria Lexical</option>
+                                        <option value="n m">Nome masculino</option>
+                                        <option value="n f">Nome feminino</option>
+                                        <option value="adj">Adjetivo</option>
+                                        <option value="v intr">Verbo Intransitivo</option>
+                                        <option value="v tr">Verbo Transitivo</option>
+                                        <option value="adv">Advérbio</option>
+                                        <option value="prep">Preposição</option>
+                                        <option value="conj">Conjunção</option>
+                                        <option value="interj">Interjeição</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-outline-danger remove-sinonimo-ca" style="display: none;">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline-primary btn-sm" id="add-sinonimo-ca">
+                            <i class="bi bi-plus me-1"></i>Adicionar Sinónimo (Catalão)
+                        </button>
+                    </div>
+                    
+                    <!-- Siglas -->
+                    <div class="col-12">
+                        <label class="form-label">Siglas/Abreviações</label>
+                        <div id="siglas-container">
+                            <div class="row g-2 mb-2 sigla-row">
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" name="sigla_term[]" placeholder="Sigla/Abreviação">
+                                </div>
+                                <div class="col-md-4">
+                                    <select class="form-select" name="sigla_lex[]">
+                                        <option value="">Categoria Lexical</option>
+                                        <option value="n m">Nome masculino</option>
+                                        <option value="n f">Nome feminino</option>
+                                        <option value="adj">Adjetivo</option>
+                                        <option value="v intr">Verbo Intransitivo</option>
+                                        <option value="v tr">Verbo Transitivo</option>
+                                        <option value="adv">Advérbio</option>
+                                        <option value="prep">Preposição</option>
+                                        <option value="conj">Conjunção</option>
+                                        <option value="interj">Interjeição</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-outline-danger remove-sigla" style="display: none;">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline-primary btn-sm" id="add-sigla">
+                            <i class="bi bi-plus me-1"></i>Adicionar Sigla
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informação Científica -->
+        <div class="col-12">
+            <div class="form-section">
+                <h5 class="section-title">Informação Científica</h5>
+                
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="CAS" class="form-label">Número CAS</label>
+                        <input type="text" class="form-control" id="CAS" name="CAS" placeholder="Ex: 1420477-60-6">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notas e Informações Adicionais -->
+        <div class="col-12">
+            <div class="form-section">
+                <h5 class="section-title">Informações Adicionais</h5>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label for="note_ca" class="form-label">Notas (Catalão)</label>
+                        <textarea class="form-control" id="note_ca" name="note_ca" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="col-12">
+                        <label for="abonacoes" class="form-label">Abonações</label>
+                        <textarea class="form-control" id="abonacoes" name="abonacoes" rows="3" placeholder="Exemplos de uso em contexto"></textarea>
+                    </div>
+                    
+                    <div class="col-12">
+                        <label for="informacao_enciclopedia" class="form-label">Informação Enciclopédica</label>
+                        <textarea class="form-control" id="informacao_enciclopedia" name="informacao_enciclopedia" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botões -->
+        <div class="col-12">
+            <div class="d-flex justify-content-end gap-2">
+                <button onclick="history.back()" type="button" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Voltar
+                </button>
+                <button type="reset" class="btn btn-outline-warning">
+                    <i class="bi bi-arrow-clockwise me-2"></i>Limpar
+                </button>
+                <button type="submit" class="btn btn-outline-success">
+                    <i class="bi bi-plus-circle me-2"></i>Adicionar Conceito
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='scripts/add_edit_concept.js') }}"></script>
+{% endblock %}

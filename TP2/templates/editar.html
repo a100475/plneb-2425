@@ -1,0 +1,350 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<title>Editar Conceito: {{ conceito }}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/add_edit_concept.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <h2 class="mb-4">Editar Conceito: {{ conceito }}</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('edit.guardar_edicao', conceito=conceito) }}" method="POST" class="row g-3" novalidate>
+        
+        <!-- Informação Básica -->
+        <div class="col-12">
+            <div class="form-section">
+                <h5 class="section-title">Informação Básica</h5>
+                
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="termo" class="form-label">Termo *</label>
+                        <input type="text" class="form-control" id="termo" name="termo" value="{{ conceito }}" required>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="lex_cat" class="form-label">Categoria Lexical</label>
+                        <select class="form-select" id="lex_cat" name="lex_cat">
+                            <option value="">Selecionar...</option>
+                            <option value="n m" {% if info.get('lex_cat') == 'n m' %}selected{% endif %}>Nome masculino</option>
+                            <option value="n f" {% if info.get('lex_cat') == 'n f' %}selected{% endif %}>Nome feminino</option>
+                            <option value="adj" {% if info.get('lex_cat') == 'adj' %}selected{% endif %}>Adjetivo</option>                         
+                            <option value="v intr" {% if info.get('lex_cat') == 'v intr' %}selected{% endif %}>Verbo Intransitivo</option>
+                            <option value="v tr" {% if info.get('lex_cat') == 'v tr' %}selected{% endif %}>Verbo Transitivo</option>
+                            <option value="adv" {% if info.get('lex_cat') == 'adv' %}selected{% endif %}>Advérbio</option>
+                            <option value="prep" {% if info.get('lex_cat') == 'prep' %}selected{% endif %}>Preposição</option>
+                            <option value="conj" {% if info.get('lex_cat') == 'conj' %}selected{% endif %}>Conjunção</option>
+                            <option value="interj" {% if info.get('lex_cat') == 'interj' %}selected{% endif %}>Interjeição</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Traduções -->
+        <div class="col-12">
+            <div class="form-section">
+                <h5 class="section-title">Traduções</h5>
+                
+                <div class="row g-3">
+                    <!-- Catalão -->
+                    <div class="col-md-4">
+                        <label for="traducao_ca_term" class="form-label">Catalão - Termo</label>
+                        <input type="text" class="form-control" id="traducao_ca_term" name="traducao_ca_term" 
+                               value="{% if info.get('traducao_ca') %}{{ info['traducao_ca'][0]['term'] }}{% endif %}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="lex_cat_ca" class="form-label">Categoria Lexical</label>
+                        <select class="form-select" id="lex_cat_ca" name="lex_cat_ca">
+                            <option value="">Selecionar...</option>
+                            <option value="n m" {% if info.get('traducao_ca') and info['traducao_ca'][0].get('lex_cat') == 'n m' %}selected{% endif %}>Nome masculino</option>
+                            <option value="n f" {% if info.get('traducao_ca') and info['traducao_ca'][0].get('lex_cat') == 'n f' %}selected{% endif %}>Nome feminino</option>
+                            <option value="adj" {% if info.get('traducao_ca') and info['traducao_ca'][0].get('lex_cat') == 'adj' %}selected{% endif %}>Adjetivo</option>
+                            <option value="v intr" {% if info.get('traducao_ca') and info['traducao_ca'][0].get('lex_cat') == 'v intr' %}selected{% endif %}>Verbo Intransitivo</option>
+                            <option value="v tr" {% if info.get('traducao_ca') and info['traducao_ca'][0].get('lex_cat') == 'v tr' %}selected{% endif %}>Verbo Transitivo</option>
+                            <option value="adv" {% if info.get('traducao_ca') and info['traducao_ca'][0].get('lex_cat') == 'adv' %}selected{% endif %}>Advérbio</option>
+                            <option value="prep" {% if info.get('traducao_ca') and info['traducao_ca'][0].get('lex_cat') == 'prep' %}selected{% endif %}>Preposição</option>
+                            <option value="conj" {% if info.get('traducao_ca') and info['traducao_ca'][0].get('lex_cat') == 'conj' %}selected{% endif %}>Conjunção</option>
+                            <option value="interj" {% if info.get('traducao_ca') and info['traducao_ca'][0].get('lex_cat') == 'interj' %}selected{% endif %}>Interjeição</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Espanhol -->
+                    <div class="col-md-4">
+                        <label for="traducao_es_term" class="form-label">Espanhol - Termo</label>
+                        <input type="text" class="form-control" id="traducao_es_term" name="traducao_es_term"
+                               value="{% if info.get('traducao_es') %}{{ info['traducao_es'][0]['term'] }}{% endif %}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="lex_cat_es" class="form-label">Categoria Lexical</label>
+                        <select class="form-select" id="lex_cat_es" name="lex_cat_es">
+                            <option value="">Selecionar...</option>
+                            <option value="n m" {% if info.get('traducao_es') and info['traducao_es'][0].get('lex_cat') == 'n m' %}selected{% endif %}>Nome masculino</option>
+                            <option value="n f" {% if info.get('traducao_es') and info['traducao_es'][0].get('lex_cat') == 'n f' %}selected{% endif %}>Nome feminino</option>
+                            <option value="adj" {% if info.get('traducao_es') and info['traducao_es'][0].get('lex_cat') == 'adj' %}selected{% endif %}>Adjetivo</option>
+                            <option value="v intr" {% if info.get('traducao_es') and info['traducao_es'][0].get('lex_cat') == 'v intr' %}selected{% endif %}>Verbo Intransitivo</option>
+                            <option value="v tr" {% if info.get('traducao_es') and info['traducao_es'][0].get('lex_cat') == 'v tr' %}selected{% endif %}>Verbo Transitivo</option>
+                            <option value="adv" {% if info.get('traducao_es') and info['traducao_es'][0].get('lex_cat') == 'adv' %}selected{% endif %}>Advérbio</option>
+                            <option value="prep" {% if info.get('traducao_es') and info['traducao_es'][0].get('lex_cat') == 'prep' %}selected{% endif %}>Preposição</option>
+                            <option value="conj" {% if info.get('traducao_es') and info['traducao_es'][0].get('lex_cat') == 'conj' %}selected{% endif %}>Conjunção</option>
+                            <option value="interj" {% if info.get('traducao_es') and info['traducao_es'][0].get('lex_cat') == 'interj' %}selected{% endif %}>Interjeição</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Inglês -->
+                    <div class="col-md-4">
+                        <label for="traducao_en_term" class="form-label">Inglês - Termo</label>
+                        <input type="text" class="form-control" id="traducao_en_term" name="traducao_en_term"
+                               value="{% if info.get('traducao_en') %}{{ info['traducao_en'][0]['term'] }}{% endif %}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="lex_cat_en" class="form-label">Categoria Lexical</label>
+                        <select class="form-select" id="lex_cat_en" name="lex_cat_en">
+                            <option value="">Selecionar...</option>
+                            <option value="n m" {% if info.get('traducao_en') and info['traducao_en'][0].get('lex_cat') == 'n m' %}selected{% endif %}>Nome masculino</option>
+                            <option value="n f" {% if info.get('traducao_en') and info['traducao_en'][0].get('lex_cat') == 'n f' %}selected{% endif %}>Nome feminino</option>
+                            <option value="adj" {% if info.get('traducao_en') and info['traducao_en'][0].get('lex_cat') == 'adj' %}selected{% endif %}>Adjetivo</option>
+                            <option value="v intr" {% if info.get('traducao_en') and info['traducao_en'][0].get('lex_cat') == 'v intr' %}selected{% endif %}>Verbo Intransitivo</option>
+                            <option value="v tr" {% if info.get('traducao_en') and info['traducao_en'][0].get('lex_cat') == 'v tr' %}selected{% endif %}>Verbo Transitivo</option>
+                            <option value="adv" {% if info.get('traducao_en') and info['traducao_en'][0].get('lex_cat') == 'adv' %}selected{% endif %}>Advérbio</option>
+                            <option value="prep" {% if info.get('traducao_en') and info['traducao_en'][0].get('lex_cat') == 'prep' %}selected{% endif %}>Preposição</option>
+                            <option value="conj" {% if info.get('traducao_en') and info['traducao_en'][0].get('lex_cat') == 'conj' %}selected{% endif %}>Conjunção</option>
+                            <option value="interj" {% if info.get('traducao_en') and info['traducao_en'][0].get('lex_cat') == 'interj' %}selected{% endif %}>Interjeição</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Francês -->
+                    <div class="col-md-4">
+                        <label for="traducao_fr_term" class="form-label">Francês - Termo</label>
+                        <input type="text" class="form-control" id="traducao_fr_term" name="traducao_fr_term"
+                               value="{% if info.get('traducao_fr') %}{{ info['traducao_fr'][0]['term'] }}{% endif %}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="lex_cat_fr" class="form-label">Categoria Lexical</label>
+                        <select class="form-select" id="lex_cat_fr" name="lex_cat_fr">
+                            <option value="">Selecionar...</option>
+                            <option value="n m" {% if info.get('traducao_fr') and info['traducao_fr'][0].get('lex_cat') == 'n m' %}selected{% endif %}>Nome masculino</option>
+                            <option value="n f" {% if info.get('traducao_fr') and info['traducao_fr'][0].get('lex_cat') == 'n f' %}selected{% endif %}>Nome feminino</option>
+                            <option value="adj" {% if info.get('traducao_fr') and info['traducao_fr'][0].get('lex_cat') == 'adj' %}selected{% endif %}>Adjetivo</option>
+                            <option value="v intr" {% if info.get('traducao_fr') and info['traducao_fr'][0].get('lex_cat') == 'v intr' %}selected{% endif %}>Verbo Intransitivo</option>
+                            <option value="v tr" {% if info.get('traducao_fr') and info['traducao_fr'][0].get('lex_cat') == 'v tr' %}selected{% endif %}>Verbo Transitivo</option>
+                            <option value="adv" {% if info.get('traducao_fr') and info['traducao_fr'][0].get('lex_cat') == 'adv' %}selected{% endif %}>Advérbio</option>
+                            <option value="prep" {% if info.get('traducao_fr') and info['traducao_fr'][0].get('lex_cat') == 'prep' %}selected{% endif %}>Preposição</option>
+                            <option value="conj" {% if info.get('traducao_fr') and info['traducao_fr'][0].get('lex_cat') == 'conj' %}selected{% endif %}>Conjunção</option>
+                            <option value="interj" {% if info.get('traducao_fr') and info['traducao_fr'][0].get('lex_cat') == 'interj' %}selected{% endif %}>Interjeição</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Árabe -->
+                    <div class="col-md-4">
+                        <label for="traducao_ar_term" class="form-label">Árabe - Termo</label>
+                        <input type="text" class="form-control" id="traducao_ar_term" name="traducao_ar_term"
+                               value="{% if info.get('traducao_ar') %}{{ info['traducao_ar'][0]['term'] }}{% endif %}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="lex_cat_ar" class="form-label">Categoria Lexical</label>
+                        <select class="form-select" id="lex_cat_ar" name="lex_cat_ar">
+                            <option value="">Selecionar...</option>
+                            <option value="n m" {% if info.get('traducao_ar') and info['traducao_ar'][0].get('lex_cat') == 'n m' %}selected{% endif %}>Nome masculino</option>
+                            <option value="n f" {% if info.get('traducao_ar') and info['traducao_ar'][0].get('lex_cat') == 'n f' %}selected{% endif %}>Nome feminino</option>
+                            <option value="adj" {% if info.get('traducao_ar') and info['traducao_ar'][0].get('lex_cat') == 'adj' %}selected{% endif %}>Adjetivo</option>
+                            <option value="v intr" {% if info.get('traducao_ar') and info['traducao_ar'][0].get('lex_cat') == 'v intr' %}selected{% endif %}>Verbo Intransitivo</option>
+                            <option value="v tr" {% if info.get('traducao_ar') and info['traducao_ar'][0].get('lex_cat') == 'v tr' %}selected{% endif %}>Verbo Transitivo</option>
+                            <option value="adv" {% if info.get('traducao_ar') and info['traducao_ar'][0].get('lex_cat') == 'adv' %}selected{% endif %}>Advérbio</option>
+                            <option value="prep" {% if info.get('traducao_ar') and info['traducao_ar'][0].get('lex_cat') == 'prep' %}selected{% endif %}>Preposição</option>
+                            <option value="conj" {% if info.get('traducao_ar') and info['traducao_ar'][0].get('lex_cat') == 'conj' %}selected{% endif %}>Conjunção</option>
+                            <option value="interj" {% if info.get('traducao_ar') and info['traducao_ar'][0].get('lex_cat') == 'interj' %}selected{% endif %}>Interjeição</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Holandês -->
+                    <div class="col-md-4">
+                        <label for="traducao_nl_term" class="form-label">Holandês - Termo</label>
+                        <input type="text" class="form-control" id="traducao_nl_term" name="traducao_nl_term"
+                               value="{% if info.get('traducao_nl') %}{{ info['traducao_nl'][0]['term'] }}{% endif %}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="lex_cat_nl" class="form-label">Categoria Lexical</label>
+                        <select class="form-select" id="lex_cat_nl" name="lex_cat_nl">
+                            <option value="">Selecionar...</option>
+                            <option value="n m" {% if info.get('traducao_nl') and info['traducao_nl'][0].get('lex_cat') == 'n m' %}selected{% endif %}>Nome masculino</option>
+                            <option value="n f" {% if info.get('traducao_nl') and info['traducao_nl'][0].get('lex_cat') == 'n f' %}selected{% endif %}>Nome feminino</option>
+                            <option value="adj" {% if info.get('traducao_nl') and info['traducao_nl'][0].get('lex_cat') == 'adj' %}selected{% endif %}>Adjetivo</option>
+                            <option value="v intr" {% if info.get('traducao_nl') and info['traducao_nl'][0].get('lex_cat') == 'v intr' %}selected{% endif %}>Verbo Intransitivo</option>
+                            <option value="v tr" {% if info.get('traducao_nl') and info['traducao_nl'][0].get('lex_cat') == 'v tr' %}selected{% endif %}>Verbo Transitivo</option>
+                            <option value="adv" {% if info.get('traducao_nl') and info['traducao_nl'][0].get('lex_cat') == 'adv' %}selected{% endif %}>Advérbio</option>
+                            <option value="prep" {% if info.get('traducao_nl') and info['traducao_nl'][0].get('lex_cat') == 'prep' %}selected{% endif %}>Preposição</option>
+                            <option value="conj" {% if info.get('traducao_nl') and info['traducao_nl'][0].get('lex_cat') == 'conj' %}selected{% endif %}>Conjunção</option>
+                            <option value="interj" {% if info.get('traducao_nl') and info['traducao_nl'][0].get('lex_cat') == 'interj' %}selected{% endif %}>Interjeição</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Occitano -->
+                    <div class="col-md-4">
+                        <label for="traducao_oc_term" class="form-label">Occitano - Termo</label>
+                        <input type="text" class="form-control" id="traducao_oc_term" name="traducao_oc_term"
+                               value="{% if info.get('traducao_oc') %}{{ info['traducao_oc'][0]['term'] }}{% endif %}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="lex_cat_oc" class="form-label">Categoria Lexical</label>
+                        <select class="form-select" id="lex_cat_oc" name="lex_cat_oc">
+                            <option value="">Selecionar...</option>
+                            <option value="n m" {% if info.get('traducao_oc') and info['traducao_oc'][0].get('lex_cat') == 'n m' %}selected{% endif %}>Nome masculino</option>
+                            <option value="n f" {% if info.get('traducao_oc') and info['traducao_oc'][0].get('lex_cat') == 'n f' %}selected{% endif %}>Nome feminino</option>
+                            <option value="adj" {% if info.get('traducao_oc') and info['traducao_oc'][0].get('lex_cat') == 'adj' %}selected{% endif %}>Adjetivo</option>
+                            <option value="v intr" {% if info.get('traducao_oc') and info['traducao_oc'][0].get('lex_cat') == 'v intr' %}selected{% endif %}>Verbo Intransitivo</option>
+                            <option value="v tr" {% if info.get('traducao_oc') and info['traducao_oc'][0].get('lex_cat') == 'v tr' %}selected{% endif %}>Verbo Transitivo</option>
+                            <option value="adv" {% if info.get('traducao_oc') and info['traducao_oc'][0].get('lex_cat') == 'adv' %}selected{% endif %}>Advérbio</option>
+                            <option value="prep" {% if info.get('traducao_oc') and info['traducao_oc'][0].get('lex_cat') == 'prep' %}selected{% endif %}>Preposição</option>
+                            <option value="conj" {% if info.get('traducao_oc') and info['traducao_oc'][0].get('lex_cat') == 'conj' %}selected{% endif %}>Conjunção</option>
+                            <option value="interj" {% if info.get('traducao_oc') and info['traducao_oc'][0].get('lex_cat') == 'interj' %}selected{% endif %}>Interjeição</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Basco -->
+                    <div class="col-md-4">
+                        <label for="traducao_eu_term" class="form-label">Basco - Termo</label>
+                        <input type="text" class="form-control" id="traducao_eu_term" name="traducao_eu_term"
+                               value="{% if info.get('traducao_eu') %}{{ info['traducao_eu'][0]['term'] }}{% endif %}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="lex_cat_eu" class="form-label">Categoria Lexical</label>
+                        <select class="form-select" id="lex_cat_eu" name="lex_cat_eu">
+                            <option value="">Selecionar...</option>
+                            <option value="n m" {% if info.get('traducao_eu') and info['traducao_eu'][0].get('lex_cat') == 'n m' %}selected{% endif %}>Nome masculino</option>
+                            <option value="n f" {% if info.get('traducao_eu') and info['traducao_eu'][0].get('lex_cat') == 'n f' %}selected{% endif %}>Nome feminino</option>
+                            <option value="adj" {% if info.get('traducao_eu') and info['traducao_eu'][0].get('lex_cat') == 'adj' %}selected{% endif %}>Adjetivo</option>
+                            <option value="v intr" {% if info.get('traducao_eu') and info['traducao_eu'][0].get('lex_cat') == 'v intr' %}selected{% endif %}>Verbo Intransitivo</option>
+                            <option value="v tr" {% if info.get('traducao_eu') and info['traducao_eu'][0].get('lex_cat') == 'v tr' %}selected{% endif %}>Verbo Transitivo</option>
+                            <option value="adv" {% if info.get('traducao_eu') and info['traducao_eu'][0].get('lex_cat') == 'adv' %}selected{% endif %}>Advérbio</option>
+                            <option value="prep" {% if info.get('traducao_eu') and info['traducao_eu'][0].get('lex_cat') == 'prep' %}selected{% endif %}>Preposição</option>
+                            <option value="conj" {% if info.get('traducao_eu') and info['traducao_eu'][0].get('lex_cat') == 'conj' %}selected{% endif %}>Conjunção</option>
+                            <option value="interj" {% if info.get('traducao_eu') and info['traducao_eu'][0].get('lex_cat') == 'interj' %}selected{% endif %}>Interjeição</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Galego -->
+                    <div class="col-md-4">
+                        <label for="traducao_gl_term" class="form-label">Galego - Termo</label>
+                        <input type="text" class="form-control" id="traducao_gl_term" name="traducao_gl_term"
+                               value="{% if info.get('traducao_gl') %}{{ info['traducao_gl'][0]['term'] }}{% endif %}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="lex_cat_gl" class="form-label">Categoria Lexical</label>
+                        <select class="form-select" id="lex_cat_gl" name="lex_cat_gl">
+                            <option value="">Selecionar...</option>
+                            <option value="n m" {% if info.get('traducao_gl') and info['traducao_gl'][0].get('lex_cat') == 'n m' %}selected{% endif %}>Nome masculino</option>
+                            <option value="n f" {% if info.get('traducao_gl') and info['traducao_gl'][0].get('lex_cat') == 'n f' %}selected{% endif %}>Nome feminino</option>
+                            <option value="adj" {% if info.get('traducao_gl') and info['traducao_gl'][0].get('lex_cat') == 'adj' %}selected{% endif %}>Adjetivo</option>
+                            <option value="v intr" {% if info.get('traducao_gl') and info['traducao_gl'][0].get('lex_cat') == 'v intr' %}selected{% endif %}>Verbo Intransitivo</option>
+                            <option value="v tr" {% if info.get('traducao_gl') and info['traducao_gl'][0].get('lex_cat') == 'v tr' %}selected{% endif %}>Verbo Transitivo</option>
+                            <option value="adv" {% if info.get('traducao_gl') and info['traducao_gl'][0].get('lex_cat') == 'adv' %}selected{% endif %}>Advérbio</option>
+                            <option value="prep" {% if info.get('traducao_gl') and info['traducao_gl'][0].get('lex_cat') == 'prep' %}selected{% endif %}>Preposição</option>
+                            <option value="conj" {% if info.get('traducao_gl') and info['traducao_gl'][0].get('lex_cat') == 'conj' %}selected{% endif %}>Conjunção</option>
+                            <option value="interj" {% if info.get('traducao_gl') and info['traducao_gl'][0].get('lex_cat') == 'interj' %}selected{% endif %}>Interjeição</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Descrições -->
+        <div class="col-12">
+            <div class="form-section">
+                <h5 class="section-title">Descrições</h5>
+                
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label for="desc" class="form-label">Descrição (Português)</label>
+                        <textarea class="form-control" id="desc" name="desc" rows="3" placeholder="Uma descrição por linha">{% if info.get('desc') %}{{ info['desc'] | join('\n') }}{% endif %}</textarea>
+                        <div class="form-text">Separe múltiplas descrições com quebras de linha</div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="desc_ca_type" class="form-label">Tipo (Catalão)</label>
+                        <input type="text" class="form-control" id="desc_ca_type" name="desc_ca_type" 
+                               placeholder="Ex: PRINCIPIS ACTIUS" 
+                               value="{% if info.get('desc_ca') and info['desc_ca'].get('type') %}{{ info['desc_ca']['type'] }}{% endif %}">
+                    </div>
+                    
+                    <div class="col-12">
+                        <label for="desc_ca_text" class="form-label">Descrição (Catalão)</label>
+                        <textarea class="form-control" id="desc_ca_text" name="desc_ca_text" rows="3">{% if info.get('desc_ca') and info['desc_ca'].get('text') %}{{ info['desc_ca']['text'] }}{% endif %}</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informação Científica -->
+        <div class="col-12">
+            <div class="form-section">
+                <h5 class="section-title">Informação Científica</h5>
+                
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="CAS" class="form-label">Número CAS</label>
+                        <input type="text" class="form-control" id="CAS" name="CAS" 
+                               placeholder="Ex: 1420477-60-6" 
+                               value="{% if info.get('CAS') %}{{ info['CAS'] }}{% endif %}">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notas e Informações Adicionais -->
+        <div class="col-12">
+            <div class="form-section">
+                <h5 class="section-title">Informações Adicionais</h5>
+                
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label for="note_ca" class="form-label">Notas (Catalão)</label>
+                        <textarea class="form-control" id="note_ca" name="note_ca" rows="3">{% if info.get('note_ca') %}{{ info['note_ca'] | join('\n') }}{% endif %}</textarea>
+                    </div>
+                    
+                    <div class="col-12">
+                        <label for="abonacoes" class="form-label">Abonações</label>
+                        <textarea class="form-control" id="abonacoes" name="abonacoes" rows="3" 
+                                  placeholder="Exemplos de uso em contexto">{% if info.get('abonacoes') %}{{ info['abonacoes'] }}{% endif %}</textarea>
+                    </div>
+                    
+                    <div class="col-12">
+                        <label for="informacao_enciclopedia" class="form-label">Informação Enciclopédica</label>
+                        <textarea class="form-control" id="informacao_enciclopedia" name="informacao_enciclopedia" rows="3">{% if info.get('informacao_enciclopedia') %}{{ info['informacao_enciclopedia'] }}{% endif %}</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botões -->
+        <div class="col-12">
+            <div class="d-flex justify-content-end gap-2">
+                <button onclick="history.back()" type="button" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Voltar
+                </button>
+                <button type="reset" class="btn btn-outline-warning">
+                    <i class="bi bi-arrow-clockwise me-2"></i>Limpar
+                </button>
+                <button type="submit" class="btn btn-outline-success">
+                    <i class="bi bi-save me-2"></i>Salvar Alterações
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='scripts/add_edit_concept.js') }}"></script>
+{% endblock %}

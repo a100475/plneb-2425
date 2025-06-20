@@ -1,0 +1,296 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<title>{{title}}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/table.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="table-container">
+                <div class="table-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="mb-1">{{title}}</h2>
+                            <p class="mb-0 opacity-75">Dicionário de Conceitos Médicos</p>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-table me-2" style="font-size: 2rem; opacity: 0.7;"></i>
+                            <span class="badge bg-light text-dark">{{db|length}} conceitos</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Filtros principais -->
+                <div class="p-3 border-bottom bg-light">
+                    <form method="GET" action="/tabela" id="filterForm" class="row g-3">
+                        <div class="col-md-4">
+                            <label for="search" class="form-label">
+                                <i class="bi bi-search me-1"></i>Pesquisar
+                            </label>
+                            <input type="text" class="form-control" id="search" name="search" 
+                                   placeholder="Digite o termo a pesquisar..." 
+                                   value="{{ current_search or '' }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="category" class="form-label">
+                                <i class="bi bi-tags me-1"></i>Categoria
+                            </label>
+                            <select class="form-select" id="category" name="category">
+                                <option value="all" {% if not current_category or current_category == 'all' %}selected{% endif %}>
+                                    Todas as categorias
+                                </option>
+                                {% for cat in categories %}
+                                    <option value="{{ cat }}" {% if current_category == cat %}selected{% endif %}>
+                                        {{ cat }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="translation_lang" class="form-label">
+                                <i class="bi bi-translate me-1"></i>Tradução Disponível
+                            </label>
+                            <select class="form-select" id="translation_lang" name="translation_lang">
+                                <option value="none" {% if not current_translation_lang or current_translation_lang == 'none' %}selected{% endif %}>
+                                    Qualquer idioma
+                                </option>
+                                {% for lang in available_languages %}
+                                    <option value="{{ lang }}" {% if current_translation_lang == lang %}selected{% endif %}>
+                                        {{ lang.upper() }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <!-- Campos ocultos para opções de pesquisa -->
+                        <input type="hidden" name="case_sensitive" value="{{ current_case_sensitive }}">
+                        <input type="hidden" name="is_regex" value="{{ current_is_regex }}">
+                        
+                        <!-- Campos ocultos para filtros avançados -->
+                        <input type="hidden" name="has_description" value="{{ current_has_description }}">
+                        <input type="hidden" name="no_description" value="{{ current_no_description }}">
+                        <input type="hidden" name="first_letter" value="{{ current_first_letter }}">
+                        <input type="hidden" name="min_length" value="{{ current_min_length }}">
+                        <input type="hidden" name="max_length" value="{{ current_max_length }}">
+                        <input type="hidden" name="term_type" value="{{ current_term_type }}">
+                    </form>
+                </div>
+                                
+                <!-- Tabela de conceitos -->
+                <div class="table-content-wrapper">
+                    {% if db|length > 0 %}
+                        <!-- Indicador de Loading -->
+                        <div id="table-loading" class="text-center py-4">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Carregando...</span>
+                            </div>
+                            <p class="mt-2 text-muted">Carregando a tabela...</p>
+                        </div>
+                        
+                        <table id="tabela_conceitos" class="table table-hover mb-0" style="display: none;">
+                            <thead>
+                                <tr>
+                                    <th style="width: 35%;" class="text-center">
+                                        <i class="bi bi-bookmark me-2"></i>Conceito
+                                    </th>
+                                    <th style="width: 50%;" class="text-center">
+                                        <i class="bi bi-file-text me-2"></i>Descrição
+                                    </th>
+                                    <th style="width: 15%;" class="text-center">
+                                        <i class="bi bi-gear me-2"></i>Ações
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for designacao, info in db.items() %}
+                                    <tr>
+                                        <td class="text-center">
+                                            <a href="/detalhes/{{designacao}}" class="concept-link">
+                                                <i class="bi bi-arrow-right-circle me-2 text-muted"></i>
+                                                {% if search_query and info.get('highlighted_name') %}
+                                                    {{ info['highlighted_name'] | safe }}
+                                                {% else %}
+                                                    {{ designacao }}
+                                                {% endif %}
+                                            </a>
+                                        </td>
+                                        <td class="text-center">
+                                            {% if search_query and info.get('highlighted_desc') %}
+                                                <span class="description-text">
+                                                    {{ info['highlighted_desc'][0] | safe | truncate(80, true, '...') }}
+                                                </span>
+                                            {% elif info.get('desc') and info['desc']|length > 0 %}
+                                                <span class="description-text">
+                                                    {{ info['desc'][0] | capitalize | truncate(80, true, '...') }}
+                                                </span>
+                                            {% else %}
+                                                <span class="text-muted fst-italic">Sem descrição disponível</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="/detalhes/{{designacao}}" class="btn btn-outline-primary action-btn" data-concept="{{designacao}}">
+                                                <i class="bi bi-eye me-1"></i>Detalhes
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
+                            <h5 class="text-muted mt-3">Nenhum resultado encontrado</h5>
+                            <p class="text-muted">Tente ajustar os filtros de pesquisa.</p>
+                            <a href="/tabela" class="btn btn-outline-primary">
+                                <i class="bi bi-arrow-clockwise me-1"></i>Limpar filtros
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de filtros avançados -->
+<div class="modal fade" id="advancedFiltersModal" tabindex="-1" aria-labelledby="advancedFiltersModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="advancedFiltersModalLabel">
+                    <i class="bi bi-sliders me-2"></i>Filtros Avançados
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-4">
+                    <!-- Filtros de descrição -->
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="bi bi-file-text me-2"></i>Filtros de Descrição</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="description_radio" id="desc_all" value="all"
+                                           {% if not current_has_description and not current_no_description %}checked{% endif %}>
+                                    <label class="form-check-label" for="desc_all">
+                                        Todos os termos
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="description_radio" id="desc_with" value="with"
+                                           {% if current_has_description == 'true' %}checked{% endif %}>
+                                    <label class="form-check-label" for="desc_with">
+                                        Apenas com descrição
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="description_radio" id="desc_without" value="without"
+                                           {% if current_no_description == 'true' %}checked{% endif %}>
+                                    <label class="form-check-label" for="desc_without">
+                                        Apenas sem descrição
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Filtros alfabéticos -->
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="bi bi-alphabet me-2"></i>Filtros Alfabéticos</h6>
+                            </div>
+                            <div class="card-body">
+                                <label for="first_letter" class="form-label">Primeira letra:</label>
+                                <select class="form-select" id="first_letter">
+                                    <option value="all" {% if not current_first_letter or current_first_letter == 'all' %}selected{% endif %}>
+                                        Todas as letras
+                                    </option>
+                                    {% for letter in available_letters %}
+                                        <option value="{{ letter }}" {% if current_first_letter == letter %}selected{% endif %}>
+                                            {{ letter }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Filtros de comprimento -->
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="bi bi-rulers me-2"></i>Filtros de Comprimento</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="min_length" class="form-label">Mín. caracteres:</label>
+                                        <input type="number" class="form-control" id="min_length" min="1" 
+                                               value="{{ current_min_length }}" placeholder="0">
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="max_length" class="form-label">Máx. caracteres:</label>
+                                        <input type="number" class="form-control" id="max_length" min="1" 
+                                               value="{{ current_max_length }}" placeholder="∞">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Filtros de tipo de termo -->
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="bi bi-diagram-2 me-2"></i>Tipo de Termo</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="term_type_radio" id="term_type_all" value="all"
+                                           {% if not current_term_type or current_term_type == 'all' %}checked{% endif %}>
+                                    <label class="form-check-label" for="term_type_all">
+                                        Todos os tipos
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="term_type_radio" id="term_type_single" value="single"
+                                           {% if current_term_type == 'single' %}checked{% endif %}>
+                                    <label class="form-check-label" for="term_type_single">
+                                        Apenas termos simples
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="term_type_radio" id="term_type_compound" value="compound"
+                                           {% if current_term_type == 'compound' %}checked{% endif %}>
+                                    <label class="form-check-label" for="term_type_compound">
+                                        Apenas termos compostos
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="clearAdvancedFilters()">
+                    <i class="bi bi-arrow-clockwise me-1"></i>Limpar Filtros
+                </button>
+                <button type="button" class="btn btn-primary" onclick="applyAdvancedFilters()">
+                    <i class="bi bi-check-lg me-1"></i>Aplicar Filtros
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='scripts/table.js') }}"></script>
+<script src="{{ url_for('static', filename='scripts/filters.js') }}"></script>
+{% endblock %}

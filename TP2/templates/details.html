@@ -1,0 +1,285 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+<title>{{ title }}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/details.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="card-section">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+            <h2 id="termo"><strong>{{ conceito }}</strong></h2>
+            <p class="text-muted">
+                <em>Categoria Lexical:</em> 
+                <span id="lex_cat" class="badge bg-primary">{{info['friendly_lex_cat']}}</span>
+            </p>
+            <p class="text-muted">
+                <em>Categoria:</em> 
+                <span id="cat" class="badge bg-info">{{info['categoria'] or 'N/A'}}</span>
+            </p>
+        </div>
+        
+        <!-- Legend Button -->
+        <div>
+            <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#lexCatLegendModal">
+                <i class="bi bi-info-circle me-1"></i>Legenda das Categorias
+            </button>
+        </div>
+    </div>
+
+    
+    <!-- Descrições -->
+    {% if info.get('desc') %}
+        <hr>
+        <h5>Descrição</h5>
+    {% endif %}
+
+    {% if info.get('linked_desc') %}
+        {% for d in info['linked_desc'] %}
+            <p id="desc">• {{ d | safe }}</p>
+        {% endfor %}
+    {% elif info.get('desc') %}
+        {% for d in info['desc'] %}
+            <p id="desc">• {{ d | capitalize }}</p>
+        {% endfor %}
+    {% endif %}
+    
+
+    <!-- Traduções -->
+    {% set traducoes = {
+        'traducao_ca': 'Catalão',
+        'traducao_es': 'Espanhol', 
+        'traducao_en': 'Inglês',
+        'traducao_fr': 'Francês',
+        'traducao_gl': 'Galego',
+        'traducao_oc': 'Occitano',
+        'traducao_eu': 'Basco',
+        'traducao_nl': 'Holandês',
+        'traducao_ar': 'Árabe'
+    } %}
+
+    {% set tem_traducao = traducoes.keys() | select('in', info.keys()) | list | length > 0 %}
+
+    <hr>
+    <h5>Traduções</h5>
+    {% if tem_traducao %}
+    <ul class="list-unstyled" id="traducoes">
+        {% for k, v in traducoes.items() %}
+                {% if info.get(k) %}
+                    <li class="mb-2">
+                        <strong>• {{ v }}:</strong>
+                        {% for t in info[k] %}
+                            <span class="badge bg-secondary translation-text">{{ t['term'] }} ({{ t['lex_cat'] or 'n/a'}})</span>
+                        {% endfor %} 
+                    </li>
+                {% endif %}
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p class="text-muted">Nenhuma tradução disponível.</p>
+    {% endif %}
+
+
+    <!-- Sinónimos -->
+    {% if info.get('sinonimos') %}
+    <hr>
+    <h5>Sinónimos</h5>
+    <ul class="list-unstyled" id="sinonimos">
+        {% for s in info['sinonimos'] %}
+            <li class="mb-2">
+                {% if s['term'] in db.keys() %}
+                    <a href="/detalhes/{{ s['term'] }}" class="concept-link">
+                        <span class="badge bg-success">{{ s['term'] }} ({{ s['lex_cat'] or 'n/a'}})</span>
+                    </a>
+                {% else %}
+                    <span class="badge bg-success">{{ s['term'] }} ({{ s['lex_cat'] or 'n/a'}})</span>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+
+    <!-- Siglas -->
+    {% if info.get('sigla') %}
+    <hr>
+    <h5>Siglas</h5>
+    <ul class="list-unstyled" id="siglas">
+        {% for sigla in info['sigla'] %}
+            <li class="mb-2">
+                <span class="badge bg-warning">{{ sigla['term'] }} ({{ sigla['lex_cat'] or 'n/a'}})</span>
+            </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+
+    <!-- Código CAS -->
+    {% if info.get('CAS') %}
+    <hr>
+    <h5>Código CAS</h5>
+    <p id="cas">{{ info['CAS'] }}</p>
+    {% endif %}
+
+
+    <!-- Informação Enciclopédia -->
+    {% if info.get('informacao_enciclopedia') %}
+    <hr>
+    <h5>Informação Enciclopédia</h5>
+        {% if info.get('linked_enciclopedia') %}
+        <p id="informacao_enciclopedia">{{ info['linked_enciclopedia'] | safe | capitalize }}</p>
+        {% else %}
+        <p id="informacao_enciclopedia">{{ info['informacao_enciclopedia'] | capitalize }}</p>
+        {% endif %}
+    {% endif %}
+
+
+    <!-- Abonações -->
+    {% if info.get('abonacoes') %}
+    <hr>
+    <h5>Abonações</h5>
+        {% if info.get('linked_abonacoes') %}
+        <p id="abonacoes">{{ info['linked_abonacoes'] | safe | capitalize}}</p>
+        {% else %}
+        <p id="abonacoes">{{ info['abonacoes'] | capitalize}}</p>
+        {% endif %}
+    {% endif %}
+    
+    
+    <!-- Informação Adicional -->
+    {% if info.get('desc_ca') or info.get('sinonimos_ca') or info.get('note_ca')%}
+    <hr>
+    <h5>Informação Adicional</h5>
+    {% endif %}
+
+
+    <!-- Descrição em Catalão -->
+    {% if info.get('desc_ca') %}
+        <em>Descrição em Catalão:</em>
+        <p>
+            <span id="lex_cat" class="badge bg-danger">{{ info['desc_ca']['type'] | capitalize}}</span>
+            : {{ info['desc_ca']['text'] | capitalize }}
+        </p>
+    {% endif %}
+
+
+    <!-- Sinónimos em Catalão -->
+    {% if info.get('sinonimos_ca') %}
+    <em>Sinónimos em Catalão</em>
+    <ul class="list-unstyled" id="sinonimos">
+        {% for s in info['sinonimos_ca'] %}
+            <li class="mb-2">
+                <span class="badge bg-success">{{ s['term'] }} ({{ s['lex_cat'] or 'n/a'}})</span>
+            </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    
+    <!-- Nota CA -->
+    {% if info.get('note_ca') %}
+    <em>Nota em Catalão</em>
+    <p id="note_ca">{{ info['note_ca'] | join(", " ) | capitalize}}</p>
+    {% endif %}
+</div>
+
+
+<!-- Botões -->
+<div class="mb-3 text-end">
+    <a href="/tabela" class="btn btn-outline-primary">
+        <i class="bi bi-arrow-left me-2"></i>Voltar
+    </a>
+    <a href="/editar/{{ conceito }}" class="btn btn-outline-success">
+        <i class="bi bi-pencil me-2"></i>Editar
+    </a>
+
+    <form method="POST" action="{{ url_for('remove.eliminar_conceito', conceito=conceito) }}" 
+      onsubmit="return confirm('Tem certeza que deseja eliminar este conceito?')" class="d-inline">
+    
+        <input type="hidden" name="table_referrer" value="{{ request.referrer if '/tabela' in (request.referrer or '') else '/tabela' }}">
+        
+        <button type="submit" class="btn btn-outline-danger">
+            <i class="bi bi-trash me-2"></i>Eliminar
+        </button>
+    </form>
+</div>
+
+<!-- Modal da Legenda das Categorias Lexicais -->
+<div class="modal fade" id="lexCatLegendModal" tabindex="-1" aria-labelledby="lexCatLegendModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="lexCatLegendModalLabel">
+                    <i class="bi bi-info-circle me-2"></i>Legenda das Categorias Lexicais
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted mb-3">
+                    Esta tabela mostra o significado das abreviações das categorias lexicais utilizadas no sistema:
+                </p>
+                <div class="table-responsive">
+                    <table class="table table-striped legend-table">
+                        <thead class="table-dark">
+                            <tr>
+                                <th style="width: 30%;">Abreviação</th>
+                                <th style="width: 70%;">Significado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="legend-original">adj</span></td>
+                                <td>Adjetivo</td>
+                            </tr>
+                            <tr>
+                                <td><span class="legend-original">n</span></td>
+                                <td>Nome</td>
+                            </tr>
+                            <tr>
+                                <td><span class="legend-original">n f</span></td>
+                                <td>Nome feminino</td>
+                            </tr>
+                            <tr>
+                                <td><span class="legend-original">n f pl</span></td>
+                                <td>Nome feminino plural</td>
+                            </tr>
+                            <tr>
+                                <td><span class="legend-original">n m</span></td>
+                                <td>Nome masculino</td>
+                            </tr>
+                            <tr>
+                                <td><span class="legend-original">n m pl</span></td>
+                                <td>Nome masculino plural</td>
+                            </tr>
+                            <tr>
+                                <td><span class="legend-original">n m, f</span></td>
+                                <td>Nome masculino/feminino</td>
+                            </tr>
+                            <tr>
+                                <td><span class="legend-original">v intr</span></td>
+                                <td>Verbo intransitivo</td>
+                            </tr>
+                            <tr>
+                                <td><span class="legend-original">v tr</span></td>
+                                <td>Verbo transitivo</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="alert alert-info mt-3">
+                    <i class="bi bi-lightbulb me-2"></i>
+                    <strong>Nota:</strong> Estas abreviações aparecem em parênteses ao lado dos termos nas secções de traduções, sinónimos e siglas.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg me-1"></i>Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

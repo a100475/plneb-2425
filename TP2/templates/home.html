@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+
+{% block head %}
+<title>Página Inicial</title>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <img src="{{ url_for('static', filename='images/uni_logo.jpg') }}" 
+             alt="Logo" 
+             class="img-fluid" 
+             style="height: 150px; width: auto; max-width: 100%;">
+    </div>
+    <h1 class="text-center mb-4">Bem-vindo ao nosso site!</h1>
+    <p class="text-center">Projeto desenvolvido para a disciplina de Processamento de Linguagem Natural</p>
+</div>
+{% endblock %}

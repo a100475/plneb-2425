@@ -69,5 +69,9 @@ for ascii_code in range(ord('a'), ord('z') + 1):
 
 
 
-with open("termos.json", "w", encoding="utf-8") as f:
-    json.dump(all_doencas, f, ensure_ascii=False, indent=4)
+script_dir = os.path.dirname(os.path.abspath(__file__))
+output_path = os.path.join(script_dir, "termos.json")
+
+with open(output_path, "w", encoding="utf-8") as f_out:
+    json.dump(all_doencas, f_out, indent=4, ensure_ascii=False)
+    
